@@ -17,7 +17,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   setPersistence,
-  browserSessionPersistence,
+  browserLocalPersistence,
   onAuthStateChanged,
 } from "firebase/auth";
 
@@ -36,8 +36,8 @@ export const db = getFirestore(app);
 // Authentication (email/password + Google)
 export const auth = getAuth(app);
 
-// Use session persistence (sign-out when browser/tab closed) as requested
-setPersistence(auth, browserSessionPersistence).catch(() => {
+// Use local persistence (users stay logged in across browser sessions)
+setPersistence(auth, browserLocalPersistence).catch(() => {
   // ignore persistence errors in environments that don't support it
 });
 

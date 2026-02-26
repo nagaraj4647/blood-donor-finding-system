@@ -39,8 +39,8 @@ export default function RequestBlood() {
         title: "Error ❌",
         text: err?.message || String(err),
         icon: "error",
-        background: "#111",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#171717",
         confirmButtonColor: "#e11d48",
       });
 
@@ -54,12 +54,12 @@ export default function RequestBlood() {
 
     Swal.fire({
       title: "Request Sent 🚑",
-      text: "Requester Successfully ✅",
+      text: "Matched donors will be notified ✅",
       icon: "success",
       timer: 1800,
       showConfirmButton: false,
-      background: "#111",
-      color: "#fff",
+      background: "#ffffff",
+      color: "#171717",
     });
 
     router.push(
@@ -68,10 +68,10 @@ export default function RequestBlood() {
   };
 
   return (
-    <main className="p-10 max-w-xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-white">
-        🩸 Blood Request
-      </h2>
+    <main className="min-h-screen bg-white">
+      <div className="flex items-center justify-center px-4 py-10 min-h-[calc(100vh-80px)]">
+        <div className="w-full max-w-2xl">
+      <h2 className="text-4xl font-bold mb-8 text-center text-slate-900">🚨 Request Blood</h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
@@ -163,6 +163,8 @@ export default function RequestBlood() {
         )}
 
       </form>
+        </div>
+      </div>
     </main>
   );
 }

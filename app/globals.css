@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --red-accent: #e11d48;
 }
 
 @theme inline {
@@ -12,27 +13,24 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ✅ Button */
+/* ✅ Button - Minimal Red */
 .btn {
-  @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition;
+  @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 hover:shadow-lg active:scale-95;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-all duration-200;
 }
 
 /* ✅ Input */
 .input {
-  @apply border p-3 rounded-lg bg-white text-black;
+  @apply border border-gray-300 p-3 rounded-lg bg-white text-black placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition;
 }
 
 /* ✅ Dropdown Fix */
@@ -53,4 +51,23 @@ select option {
 .gallery-img:hover {
   transform: scale(1.05);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ✅ Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.lightbox-img {
+  max-width: 90%;
+  max-height: 85%;
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
 }

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 import AuthGuard from "@/components/AuthGuard";
-import Header from "@/components/Header";
+import ResponsiveHeader from "@/components/ResponsiveHeader";
 
 export default function RootLayout({
   children,
@@ -31,7 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthGuard>
-          <Header />
+          <ResponsiveHeader />
           {children}
         </AuthGuard>
       </body>

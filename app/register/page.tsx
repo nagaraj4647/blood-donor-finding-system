@@ -3,15 +3,19 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { State, City } from "country-state-city";
-import { addDonor, findDonorByPhone, signUpWithEmail, signInWithGoogle } from "@/lib/firebase";
+import { addDonor, findDonorByPhone } from "@/lib/firebase";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Register() {
+  const params = useSearchParams();
+  const prefilledEmail = params.get("email") || "";
+  const prefilledUsername = params.get("username") || "";
+
   const [form, setForm] = useState({
-    name: "",
+    name: prefilledUsername,
     blood_group: "",
     phone: "",
-    email: "",
-    password: "",
+    email: prefilledEmail,
     state: "",
     district: "",
     place: "",
@@ -20,6 +24,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showBack, setShowBack] = useState(false);
+  const router = useRouter();
 
   // ✅ Get All Indian States
   const states = State.getStatesOfCountry("IN");
@@ -47,25 +52,21 @@ export default function Register() {
         title: "Already Registered ⚠️",
         text: "This phone number is already registered",
         icon: "warning",
-        background: "#111",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#171717",
         confirmButtonColor: "#e11d48",
       });
 
       return;
     }
-      // ✅ Create auth user (email/password) then insert into Firestore
-      if (!form.email || !form.password) {
+      // ✅ Create donor profile without password (already created in signup)
+      if (!form.name || !form.blood_group || !form.phone || !form.state || !form.district || !form.place) {
         setLoading(false);
-        Swal.fire({ title: "Email & password required", text: "Please provide email and password to create an account.", icon: "warning", background: "#111", color: "#fff", confirmButtonColor: "#e11d48" });
+        Swal.fire({ title: "All fields required", text: "Please fill in all donor information", icon: "warning", background: "#ffffff", color: "#171717", confirmButtonColor: "#e11d48" });
         return;
       }
 
-      const cred = await signUpWithEmail(form.email, form.password);
-
-      // Insert donor data into Firestore; attach uid if available
       const donorData: Record<string, any> = { ...form, available: true };
-      if (cred?.user?.uid) donorData.uid = cred.user.uid;
 
       await addDonor(donorData);
 
@@ -79,16 +80,15 @@ export default function Register() {
         icon: "success",
         timer: 1800,
         showConfirmButton: false,
-        background: "#111",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#171717",
       });
 
       setForm({
-        name: "",
+        name: prefilledUsername,
         blood_group: "",
         phone: "",
-        email: "",
-        password: "",
+        email: prefilledEmail,
         state: "",
         district: "",
         place: "",
@@ -100,8 +100,8 @@ export default function Register() {
         title: "Registration Failed ❌",
         text: err?.message || String(err),
         icon: "error",
-        background: "#1b1818",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#171717",
         confirmButtonColor: "#e11d48",
       });
       return;
@@ -111,21 +111,24 @@ export default function Register() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
-      Swal.fire({ title: "Signed in with Google", icon: "success", timer: 1400, showConfirmButton: false, background: "#111", color: "#fff" });
-      window.location.href = "/";
+      // Google sign-in available but user already has account from signup
+      Swal.fire({ title: "Info", text: "Use your signup email to sign in", icon: "info", background: "#ffffff", color: "#171717" });
     } catch (err: any) {
-      Swal.fire({ title: "Google Sign-in failed", text: err?.message || String(err), icon: "error", background: "#1b1818", color: "#fff", confirmButtonColor: "#e11d48" });
+      Swal.fire({ title: "Error", text: err?.message || String(err), icon: "error", background: "#ffffff", color: "#171717", confirmButtonColor: "#e11d48" });
     } finally {
       setLoading(false);
     }
   };
-
   return (
-    <main className="p-10 max-w-xl mx-auto text-white">
-      <h2 className="text-3xl font-bold mb-6">🩸 Donor Registration</h2>
+    <main className="min-h-screen bg-white">
+      <div className="flex items-center justify-center px-4 py-10 min-h-[calc(100vh-80px)]">
+        <div className="w-full max-w-2xl">
+      <h2 className="text-4xl font-bold mb-2 text-center text-slate-900">Donor Profile</h2>
+      <p className="text-center text-gray-600 mb-8">Step 2: Complete Your Profile</p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+        <p className="text-sm text-gray-600 py-2">Email: {form.email}</p>
 
         {/* Name */}
         <input
@@ -170,23 +173,12 @@ export default function Register() {
           required
         />
 
-        {/* Email */}
+        {/* Email - Read Only */}
         <input
           placeholder="Email"
-          className="input"
+          className="input bg-gray-100 text-gray-600 cursor-not-allowed"
           value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-
-        {/* Password */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="input"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
+          disabled
         />
 
         {/* State */}
@@ -275,14 +267,16 @@ export default function Register() {
         )}
 
       <div className="mt-6 text-center">
-        <button onClick={handleGoogle} className="btn">Sign up / Sign in with Google</button>
+        <button onClick={handleGoogle} className="btn w-full text-center">Sign in / Create with Google</button>
       </div>
 
-      <p className="mt-4 text-center">
-        Already have an account? <a href="/login" className="text-red-400 underline">Sign in</a>
+      <p className="mt-6 text-center text-gray-600">
+        Already have an account? <a href="/login" className="text-red-600 font-semibold hover:underline">Sign in</a>
       </p>
 
       </form>
+        </div>
+      </div>
     </main>
   );
 }
