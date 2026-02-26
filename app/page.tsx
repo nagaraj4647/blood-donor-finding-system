@@ -1,65 +1,175 @@
-import Image from "next/image";
-
+"use client";
+import Link from "next/link";
+import { useState } from "react";
 export default function Home() {
+  const [selectedImage, setSelectedImage] = useState(null);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-white">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 backdrop-blur-sm bg-white/95 border-b border-slate-100">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+          <h1 className="text-lg font-semibold text-slate-900">Blood Connect</h1>
+          <div className="flex items-center gap-8 text-sm font-medium text-slate-600">
+            <Link href="/" className="hover:text-slate-900 transition-colors duration-200">
+              Home
+            </Link>
+            <Link href="/about" className="hover:text-slate-900 transition-colors duration-200">
+              About
+            </Link>
+            <Link href="/FAQ" className="hover:text-slate-900 transition-colors duration-200">
+              FAQ
+            </Link>
+            <Link href="/contact" className="hover:text-slate-900 transition-colors duration-200">
+              Contact
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6 py-20">
+        <div className="w-full max-w-2xl text-center animate-fade-in">
+
+  {/* Blood Character */}
+  <div
+    className="mb-6 animate-slide-up flex justify-center"
+    style={{ animationDelay: "0.1s" }}
+  >
+    <img
+      src="/blood.png"
+      alt="Blood Drop"
+      className="w-20 md:w-24 object-contain drop-shadow-lg"
+    />
+  </div>
+
+  {/* Heading */}
+  <h1
+    className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight animate-slide-up"
+    style={{ animationDelay: "0.2s" }}
+  >
+    Save Lives.{" "}
+    <span className="text-red-600">Donate Blood</span>
+  </h1>
+
+          <p className="text-lg text-slate-600 mb-8 leading-relaxed animate-slide-up"
+             style={{ animationDelay: "0.3s" }}>
+            Every donation makes a difference. Join thousands of donors helping those in need.
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up"
+               style={{ animationDelay: "0.4s" }}>
+            <Link
+              href="/register"
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+            >
+              Register as Donor
+            </Link>
+
+            <Link
+              href="/request"
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+            >
+              Request Blood
+            </Link>
+          </div>
+
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+{/* Gallery Section */}
+<section className="py-20 bg-white">
+  <div className="max-w-6xl mx-auto px-6">
+
+    <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
+      ❤️ Our Donor Community
+    </h2>
+
+    <p className="text-slate-600 text-center mb-12">
+      Real heroes. Real lives saved.
+    </p>
+
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      {["g1.jpg","g2.jpg","g3.jpg","g4.jpg","g5.jpg","g6.jpg"].map((img) => (
+        <div
+          key={img}
+          className="gallery-card cursor-pointer"
+          onClick={() => setSelectedImage(img)}
+        >
+          <img src={`/${img}`} className="gallery-img" />
         </div>
-      </main>
+      ))}
     </div>
+  </div>
+</section>
+{selectedImage && (
+  <div className="lightbox" onClick={() => setSelectedImage(null)}>
+    <img
+      src={`/${selectedImage}`}
+      className="lightbox-img"
+    />
+  </div>
+)}
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;      }
+          to {
+            opacity: 1;
+          }
+        }
+          /* ✅ Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fade-in 0.3s ease;
+}
+
+.lightbox-img {
+  max-width: 90%;
+  max-height: 85%;
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  animation: zoom-in 0.3s ease;
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out forwards;
+        }
+
+        .animate-slide-up {
+          opacity: 0;
+          animation: slide-up 0.6s ease-out forwards;
+        }
+      `}</style>
+    </main>
   );
 }
+
