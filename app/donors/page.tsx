@@ -27,36 +27,33 @@ export default function DonorsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-4xl font-bold mb-8 text-slate-900">
-          🩸 Available Donors {group && `(${group})`}
-        </h2>
+    <main className="p-10 text-white">
+      <h2 className="text-3xl font-bold mb-6">
+        🩸 Available Donors {group && `(${group})`}
+      </h2>
 
       {donors.length === 0 ? (
-        <p className="text-gray-600 text-center py-10">No donors available matching your request 😔</p>
+        <p>No donors available 😔</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid gap-4">
           {donors.map((donor) => (
             <div
               key={donor.id}
-              className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition"
+              className="bg-white/10 p-4 rounded-xl"
             >
-              <div className="mb-4 pb-4 border-b border-gray-100">
-                <p className="text-2xl font-bold text-red-600 mb-2">{donor.blood_group}</p>
-                <p className="text-xl font-semibold text-slate-900">{donor.name}</p>
-              </div>
-              <div className="space-y-2 text-gray-700">
-                <p><b>Phone:</b> {donor.phone}</p>
-                <p><b>Location:</b> {donor.place}, {donor.district}, {donor.state}</p>
-              </div>
+              <p><b>Name:</b> {donor.name}</p>
+              <p><b>Blood Group:</b> {donor.blood_group}</p>
+              <p><b>Phone:</b> {donor.phone}</p>
+              <p><b>State:</b> {donor.state}</p>
+              <p><b>District:</b> {donor.district}</p>
+              <p><b>Place:</b> {donor.place}</p>
 
               <a
                 href={`https://wa.me/91${donor.phone}`}
                 target="_blank"
-                className="btn mt-4 inline-block w-full text-center"
+                className="btn mt-3 inline-block"
               >
-                💬 Contact Donor
+                💬 Message Donor
               </a>
             </div>
           ))}
@@ -64,14 +61,13 @@ export default function DonorsPage() {
       )}
 
       {/* ✅ BACK BUTTON AT BOTTOM */}
-      <div className="mt-12 flex justify-center">
+      <div className="mt-10 flex justify-center">
         <button
-          onClick={() => window.history.back()}
-          className="btn px-6 py-3"
+          onClick={() => window.location.href = "/"}
+          className="btn w-40"
         >
-          ← Back
+          Back to Home
         </button>
-      </div>
       </div>
     </main>
   );

@@ -19,6 +19,7 @@ import {
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -43,8 +44,12 @@ setPersistence(auth, browserLocalPersistence).catch(() => {
 
 const googleProvider = new GoogleAuthProvider();
 
-export async function signUpWithEmail(email: string, password: string) {
-  return createUserWithEmailAndPassword(auth, email, password);
+export async function signUpWithEmail(email: string, password: string, name?: string) {
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  if (name && cred.user) {
+    await updateProfile(cred.user, { displayName: name.trim() });
+  }
+  return cred;
 }
 
 export async function signInWithEmailHelper(email: string, password: string) {
@@ -56,6 +61,9 @@ export async function signOutUser() {
 }
 
 export async function signInWithGoogle() {
+  googleProvider.setCustomParameters({
+    prompt: "select_account",
+  });
   return signInWithPopup(auth, googleProvider);
 }
 
@@ -80,35 +88,43 @@ export async function addRequest(data: Record<string, any>) {
 }
 
 export async function findDonors(blood_group?: string, location?: string) {
-  let q;
-  if (blood_group) {
-    q = query(
-      collection(db, "donors"),
-      where("available", "==", true),
-      where("blood_group", "==", blood_group.toUpperCase().trim())
+  const normalizeGroup = (value: string) => {
+    const raw = String(value || "").toUpperCase().trim();
+    if (!raw) return "";
+
+    // Normalize common variants:
+    // "A +", "A Positive", "A+ve", "a positive" -> "A+"
+    // "O -", "O Negative", "O-ve" -> "O-"
+    const compact = raw
+      .replace(/\s+/g, "")
+      .replace(/POSITIVE|POS|\+VE|VE\+/g, "+")
+      .replace(/NEGATIVE|NEG|-VE|VE-/g, "-");
+
+    const match = compact.match(/^(AB|A|B|O)(\+|-)/);
+    if (match) return `${match[1]}${match[2]}`;
+
+    // fallback for already clean values
+    return compact;
+  };
+
+  const requestedGroup = blood_group ? normalizeGroup(blood_group) : "";
+
+  // Read all donors and filter in app layer so old docs (missing `available`)
+  // and slightly different blood group formats still work.
+  const snap = await getDocs(collection(db, "donors"));
+  let docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Record<string, any>) }));
+
+  // Treat donor as available unless it is explicitly set to false.
+  docs = docs.filter((d) => d.available !== false);
+
+  if (requestedGroup) {
+    docs = docs.filter(
+      (d) => normalizeGroup(String(d.blood_group || "")) === requestedGroup
     );
-  } else {
-    q = query(collection(db, "donors"), where("available", "==", true));
   }
 
-  const snap = await getDocs(q);
-  const docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Record<string, any>) }));
-
-  // Optional: Sort by location match if location is provided, but don't filter
-  if (!location) return docs;
-
-  const loc = location.toLowerCase();
-  return docs.sort((a, b) => {
-    const aMatch = 
-      (a.district || "").toLowerCase().includes(loc) ||
-      (a.place || "").toLowerCase().includes(loc) ||
-      (a.state || "").toLowerCase().includes(loc);
-    const bMatch = 
-      (b.district || "").toLowerCase().includes(loc) ||
-      (b.place || "").toLowerCase().includes(loc) ||
-      (b.state || "").toLowerCase().includes(loc);
-    return bMatch ? 1 : -1; // Location matches appear first
-  });
+  // Location is intentionally ignored: same blood group from any location should be listed.
+  return docs;
 }
 
 export async function updateDonorAvailability(id: string, available: boolean) {

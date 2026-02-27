@@ -12,8 +12,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsub = onAuthStateChange((user) => {
       if (!user) {
-        // allow login/register pages to render even when unauthenticated
-        if (pathname === "/login" || pathname === "/register") {
+        // allow auth pages to render even when unauthenticated
+        if (
+          pathname === "/login" ||
+          pathname === "/register" ||
+          pathname === "/create-account"
+        ) {
           setChecked(true);
           return;
         }

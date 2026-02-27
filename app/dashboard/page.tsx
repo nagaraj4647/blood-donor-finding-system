@@ -37,28 +37,38 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
-      <section className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-4xl font-bold mb-8 text-slate-900">Your Donor Profile</h2>
+    <main>
+      <section className="p-10">
+        <h2 className="text-3xl font-bold mb-6">Donor Dashboard</h2>
 
         <div className="grid gap-4">
           {donors.map((donor) => (
-            <div key={donor.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center bg-white shadow-sm hover:shadow-md transition">
+            <div key={donor.id} className="p-4 border rounded-lg flex justify-between items-center">
               <div>
-                <p className="font-bold text-slate-900">{donor.name}</p>
-                <p className="text-gray-600">{donor.blood_group} • {donor.state} {donor.district} {donor.place}</p>
+                <p className="font-bold">{donor.name}</p>
+                <p>{donor.blood_group} • {donor.state} {donor.district} {donor.place}</p>
               </div>
 
               <button
                 onClick={() => toggleAvailability(donor.id, donor.available)}
-                className={`px-4 py-2 rounded-lg text-white font-medium transition ${
-                  donor.available ? "bg-green-600 hover:bg-green-700" : "bg-gray-400 hover:bg-gray-500"
+                className={`px-3 py-1 rounded-lg text-white ${
+                  donor.available ? "bg-green-600" : "bg-gray-500"
                 }`}
               >
-                {donor.available ? "✓ Available" : "✕ Unavailable"}
+                {donor.available ? "Available" : "Unavailable"}
               </button>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={() => (window.location.href = "/")}
+            className="btn w-48"
+          >
+            Back to Home
+          </button>
         </div>
       </section>
     </main>

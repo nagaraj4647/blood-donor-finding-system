@@ -1,34 +1,33 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { onAuthStateChange } from "@/lib/firebase";
+
 export default function Home() {
+  const [welcomeName, setWelcomeName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChange((user) => {
+      if (!user) {
+        setWelcomeName("");
+        return;
+      }
+      const fromDisplayName = (user.displayName || "").trim();
+      const fromEmail = (user.email || "").split("@")[0];
+      setWelcomeName(fromDisplayName || fromEmail || "");
+    });
+    return () => unsub();
+  }, []);
+
   return (
     <main className="min-h-screen bg-white">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 backdrop-blur-sm bg-white/95 border-b border-slate-100">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <h1 className="text-lg font-semibold text-slate-900">Blood Connect</h1>
-          <div className="flex items-center gap-8 text-sm font-medium text-slate-600">
-            <Link href="/" className="hover:text-slate-900 transition-colors duration-200">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-slate-900 transition-colors duration-200">
-              About
-            </Link>
-            <Link href="/FAQ" className="hover:text-slate-900 transition-colors duration-200">
-              FAQ
-            </Link>
-            <Link href="/contact" className="hover:text-slate-900 transition-colors duration-200">
-              Contact
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6 py-20">
         <div className="w-full max-w-2xl text-center animate-fade-in">
+  {welcomeName && (
+    <p className="mb-3 text-base font-semibold text-red-600">Welcome, {welcomeName}</p>
+  )}
 
   {/* Blood Character */}
   <div
@@ -172,4 +171,3 @@ export default function Home() {
     </main>
   );
 }
-

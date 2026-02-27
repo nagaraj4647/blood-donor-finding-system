@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { onAuthStateChange, signOutUser } from "@/lib/firebase";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { onAuthStateChange, signOutUser } from "@/lib/firebase";
 
 export default function ResponsiveHeader() {
   const [user, setUser] = useState<any>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const hideAuthActions = ["/signup", "/register", "/request", "/login", "/create-account"].includes(pathname);
+  const hideTopLinks = ["/request", "/register", "/create-account", "/login"].includes(pathname);
 
   useEffect(() => {
     const unsub = onAuthStateChange((u) => {
@@ -21,77 +25,123 @@ export default function ResponsiveHeader() {
     try {
       await signOutUser();
       setMenuOpen(false);
-      router.push("/login");
+      router.push("/signup");
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-      <div className="flex items-center justify-between px-4 py-4">
-        {/* Hamburger Menu Button - Top Left */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="text-3xl text-gray-700 hover:text-red-600 transition"
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
+    <>
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+        <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-3">
+            {!hideAuthActions && user && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                  className="rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition hover:bg-gray-100"
+                  aria-label="Open menu"
+                >
+                  <span className="flex flex-col gap-1">
+                    <span className="h-0.5 w-4 bg-gray-700" />
+                    <span className="h-0.5 w-4 bg-gray-700" />
+                    <span className="h-0.5 w-4 bg-gray-700" />
+                  </span>
+                </button>
+              </div>
+            )}
 
-        {/* Site Title (Right side) */}
-        <Link href="/" className="text-lg font-bold text-red-600 flex items-center gap-2">
-          🩸 Blood Connect
-        </Link>
-      </div>
+            <Link href="/" className="flex items-center gap-2 text-lg font-bold text-red-600">
+              Blood Connect
+            </Link>
+          </div>
 
-      {/* Dropdown Menu */}
-      {menuOpen && (
-        <nav className="bg-white border-t border-gray-200">
-          <div className="flex flex-col p-4 gap-3 max-w-xs">
-            <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-red-600 transition py-2 font-medium">
+          <div className="flex items-center gap-8 text-sm font-medium">
+            {!hideTopLinks && (
+              <>
+            <Link href="/" className="text-red-400 hover:text-red-700 transition-colors duration-200">
               Home
             </Link>
-            <Link href="/about" onClick={() => setMenuOpen(false)} className="hover:text-red-600 transition py-2 font-medium">
+            <Link href="/about" className="text-red-400 hover:text-red-700 transition-colors duration-200">
               About
             </Link>
-            <Link href="/FAQ" onClick={() => setMenuOpen(false)} className="hover:text-red-600 transition py-2 font-medium">
+            <Link href="/FAQ" className="text-red-400 hover:text-red-700 transition-colors duration-200">
               FAQ
             </Link>
-            <Link href="/contact" onClick={() => setMenuOpen(false)} className="hover:text-red-600 transition py-2 font-medium">
+            <Link href="/contact" className="text-red-400 hover:text-red-700 transition-colors duration-200">
               Contact
             </Link>
-            <hr className="my-2" />
-            
-            {user ? (
-              <>
-                <div className="py-2">
-                  <p className="text-sm text-gray-600 mb-1">Logged in as:</p>
-                  <p className="font-semibold text-slate-900 truncate">{user.email}</p>
-                </div>
-                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="btn text-sm w-full text-center">
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="btn text-sm w-full text-center"
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="btn text-sm w-full text-center">
-                  Sign in
-                </Link>
-                <Link href="/signup" onClick={() => setMenuOpen(false)} className="btn-secondary text-sm w-full text-center">
-                  Create Account
-                </Link>
               </>
             )}
+            {!hideAuthActions && !user && (
+              <Link href="/signup" className="btn text-sm">
+                Create Account
+              </Link>
+            )}
           </div>
-        </nav>
+        </div>
+      </header>
+
+      {!hideAuthActions && user && (
+        <>
+          <div
+            className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
+              menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+            onClick={() => setMenuOpen(false)}
+          />
+          <aside
+            className={`fixed left-0 top-0 z-50 h-full w-72 bg-white shadow-2xl transition-transform duration-300 ease-out ${
+              menuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="border-b border-gray-100 px-4 py-4">
+              <Link
+                href="/"
+                className="text-lg font-bold text-red-600"
+                onClick={() => setMenuOpen(false)}
+              >
+                Blood Connect
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-between border-b border-red-100 bg-red-50 px-4 py-4">
+              <p className="font-semibold text-red-700">Menu</p>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="rounded border border-red-200 bg-white px-2 py-1 text-sm text-red-600 hover:bg-red-50"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="border-b border-gray-100 bg-slate-50 px-4 py-4">
+              <p className="text-xs font-semibold tracking-wide text-gray-500">Signed in as</p>
+              <p className="truncate text-sm font-bold text-gray-800">{user?.email}</p>
+            </div>
+
+            <nav className="py-2">
+              <Link
+                href="/dashboard"
+                className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+                onClick={() => setMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="mx-2 block w-[calc(100%-1rem)] rounded-md px-3 py-3 text-left text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+              >
+                Sign out
+              </button>
+            </nav>
+          </aside>
+        </>
       )}
-    </header>
+    </>
   );
 }
-
