@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6 py-20">
+      <section className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-12 md:py-20">
         <div className="w-full max-w-2xl text-center animate-fade-in">
   {welcomeName && (
     <p className="mb-3 text-base font-semibold text-red-600">Welcome, {welcomeName}</p>
@@ -43,7 +43,7 @@ export default function Home() {
 
   {/* Heading */}
   <h1
-    className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight animate-slide-up"
+    className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight animate-slide-up"
     style={{ animationDelay: "0.2s" }}
   >
     Save Lives.{" "}
@@ -75,7 +75,7 @@ export default function Home() {
         </div>
       </section>
 {/* Gallery Section */}
-<section className="py-20 bg-white">
+<section className="py-12 md:py-20 bg-white">
   <div className="max-w-6xl mx-auto px-6">
 
     <h2 className="text-3xl font-bold text-slate-900 text-center mb-4">
@@ -86,7 +86,7 @@ export default function Home() {
       Real heroes. Real lives saved.
     </p>
 
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
       {["g1.jpg","g2.jpg","g3.jpg","g4.jpg","g5.jpg","g6.jpg"].map((img) => (
         <div
           key={img}
