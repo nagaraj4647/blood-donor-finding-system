@@ -138,6 +138,38 @@ export default function ResponsiveHeader() {
             </div>
 
             <nav className="py-2">
+              {showTopLinks && (
+                <>
+                  <Link
+                    href="/"
+                    className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    About
+                  </Link>
+                  <Link
+                    href="/FAQ"
+                    className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    FAQ
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Contact
+                  </Link>
+                </>
+              )}
               <Link
                 href="/dashboard"
                 className="mx-2 mb-1 block rounded-md px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-red-50 hover:text-red-700"
