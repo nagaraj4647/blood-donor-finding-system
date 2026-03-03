@@ -1,4 +1,10 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
+interface Donor {
+  id: string;
+  available?: boolean;
+  bloodGroup?: string;
+  [key: string]: any;
+}
 import {
   getFirestore,
   addDoc,
@@ -43,6 +49,12 @@ setPersistence(auth, browserLocalPersistence).catch(() => {
 });
 
 const googleProvider = new GoogleAuthProvider();
+
+type DonorDoc = {
+  id: string;
+  available?: boolean;
+  blood_group?: string;
+} & Record<string, any>;
 
 export async function signUpWithEmail(email: string, password: string, name?: string) {
   const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -112,10 +124,13 @@ export async function findDonors(blood_group?: string, location?: string) {
   // Read all donors and filter in app layer so old docs (missing `available`)
   // and slightly different blood group formats still work.
   const snap = await getDocs(collection(db, "donors"));
-  let docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Record<string, any>) }));
+  let docs: DonorDoc[] = snap.docs.map((d) => ({
+    id: d.id,
+    ...(d.data() as Record<string, any>),
+  }));
 
   // Treat donor as available unless it is explicitly set to false.
-  docs = docs.filter((d) => d.available !== false);
+  docs = docs.filter((d: any) => d.available !== false);
 
   if (requestedGroup) {
     docs = docs.filter(

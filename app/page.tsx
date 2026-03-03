@@ -128,7 +128,6 @@ export default function Home() {
   z-index: 999;
   animation: fade-in 0.3s ease;
 }
-
 .lightbox-img {
   max-width: 90%;
   max-height: 85%;
