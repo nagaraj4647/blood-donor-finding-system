@@ -37,7 +37,7 @@ export default function FAQ() {
             href="/"
             className="inline-block mt-10 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition"
           >
-            Back Home
+            ← 🏠Back Home
           </Link>
         </div>
 

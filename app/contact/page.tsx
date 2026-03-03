@@ -61,7 +61,7 @@ export default function Contact() {
             href="/"
             className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition hover:shadow-lg"
           >
-            Back Home
+            ← 🏠Back Home
           </Link>
         </div>
       </section>

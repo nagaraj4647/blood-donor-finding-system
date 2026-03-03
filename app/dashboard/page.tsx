@@ -67,7 +67,7 @@ export default function Dashboard() {
             onClick={() => (window.location.href = "/")}
             className="btn w-48"
           >
-            Back to Home
+            ← 🏠Back to Home
           </button>
         </div>
       </section>

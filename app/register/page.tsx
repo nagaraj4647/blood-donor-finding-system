@@ -195,7 +195,7 @@ export default function Register() {
                 onClick={() => (window.location.href = "/")}
                 className="rounded-xl bg-red-600 px-8 py-3 font-semibold text-white transition hover:bg-red-700"
               >
-                Back Home
+                ← 🏠Back Home
               </button>
             </div>
           )}

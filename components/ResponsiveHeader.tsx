@@ -12,7 +12,18 @@ export default function ResponsiveHeader() {
   const pathname = usePathname();
 
   const hideAuthActions = ["/signup", "/register", "/request", "/login", "/create-account"].includes(pathname);
-  const hideTopLinks = ["/request", "/register", "/create-account", "/login"].includes(pathname);
+  const hideMenu = [
+    "/signup",
+    "/register",
+    "/request",
+    "/login",
+    "/create-account",
+    "/donors",
+    "/about",
+    "/FAQ",
+    "/contact",
+  ].includes(pathname);
+  const showTopLinks = ["/", "/about", "/FAQ", "/contact"].includes(pathname);
 
   useEffect(() => {
     const unsub = onAuthStateChange((u) => {
@@ -36,7 +47,7 @@ export default function ResponsiveHeader() {
       <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            {!hideAuthActions && user && (
+            {!hideMenu && user && (
               <div className="relative">
                 <button
                   type="button"
@@ -59,20 +70,20 @@ export default function ResponsiveHeader() {
           </div>
 
           <div className="flex items-center gap-8 text-sm font-medium">
-            {!hideTopLinks && (
+            {showTopLinks && (
               <>
-            <Link href="/" className="text-red-400 hover:text-red-700 transition-colors duration-200">
-              Home
-            </Link>
-            <Link href="/about" className="text-red-400 hover:text-red-700 transition-colors duration-200">
-              About
-            </Link>
-            <Link href="/FAQ" className="text-red-400 hover:text-red-700 transition-colors duration-200">
-              FAQ
-            </Link>
-            <Link href="/contact" className="text-red-400 hover:text-red-700 transition-colors duration-200">
-              Contact
-            </Link>
+                <Link href="/" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                  Home
+                </Link>
+                <Link href="/about" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                  About
+                </Link>
+                <Link href="/FAQ" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                  FAQ
+                </Link>
+                <Link href="/contact" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                  Contact
+                </Link>
               </>
             )}
             {!hideAuthActions && !user && (
@@ -84,7 +95,7 @@ export default function ResponsiveHeader() {
         </div>
       </header>
 
-      {!hideAuthActions && user && (
+      {!hideMenu && user && (
         <>
           <div
             className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
