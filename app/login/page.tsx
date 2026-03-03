@@ -12,13 +12,49 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const getAuthErrorMessage = (err: unknown, provider: "email" | "google") => {
+    const code = (err as { code?: string })?.code || "";
+    const rawMessage = (err as { message?: string })?.message || "";
+
+    if (provider === "email") {
+      if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+        return "Invalid email or password. Please check your credentials and try again.";
+      }
+      if (code === "auth/too-many-requests") {
+        return "Too many failed attempts. Please wait a few minutes and try again.";
+      }
+      if (code === "auth/network-request-failed") {
+        return "Network issue detected. Check your internet connection and try again.";
+      }
+      return "Unable to sign in right now. Please try again.";
+    }
+
+    if (code === "auth/popup-closed-by-user") {
+      return "Google sign-in was cancelled before completion.";
+    }
+    if (code === "auth/popup-blocked") {
+      return "Popup was blocked by the browser. Please allow popups and try again.";
+    }
+    if (code === "auth/account-exists-with-different-credential") {
+      return "An account already exists with this email using a different sign-in method.";
+    }
+    if (code === "auth/unauthorized-domain" || rawMessage.includes("unauthorized-domain")) {
+      return "This domain is not authorized in Firebase Auth settings.";
+    }
+    if (code === "auth/network-request-failed") {
+      return "Network issue detected. Check your internet connection and try again.";
+    }
+    return "Google sign-in failed. Please try again.";
+  };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (emailLoading || googleLoading) return;
 
-    setLoading(true);
+    setEmailLoading(true);
     try {
       await signInWithEmailHelper(email, password);
       Swal.fire({
@@ -32,21 +68,21 @@ export default function LoginPage() {
       router.push("/");
     } catch (err: any) {
       Swal.fire({
-        title: "Sign in failed",
-        text: err?.message || String(err),
+        title: "Unable to Sign In",
+        text: getAuthErrorMessage(err, "email"),
         icon: "error",
         background: "#111",
         color: "#fff",
       });
     } finally {
-      setLoading(false);
+      setEmailLoading(false);
     }
   };
 
   const handleGoogle = async () => {
-    if (loading) return;
+    if (emailLoading || googleLoading) return;
 
-    setLoading(true);
+    setGoogleLoading(true);
     try {
       await signInWithGoogle();
       Swal.fire({
@@ -59,22 +95,15 @@ export default function LoginPage() {
       });
       router.push("/");
     } catch (err: any) {
-      const rawMessage = err?.message || String(err);
-      const isUnauthorizedDomain =
-        rawMessage.includes("auth/unauthorized-domain") ||
-        rawMessage.includes("unauthorized-domain");
-
       Swal.fire({
-        title: "Google Sign-in failed",
-        text: isUnauthorizedDomain
-          ? "This domain is not authorized in Firebase. Add this host in Firebase Auth > Settings > Authorized domains."
-          : rawMessage,
+        title: "Google Sign-In Failed",
+        text: getAuthErrorMessage(err, "google"),
         icon: "error",
         background: "#111",
         color: "#fff",
       });
     } finally {
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
@@ -115,20 +144,22 @@ export default function LoginPage() {
           <button
             type="submit"
             className={`w-full rounded-xl bg-red-600 py-3 font-semibold text-white transition hover:bg-red-700 ${
-              loading ? "cursor-not-allowed opacity-50" : ""
+              emailLoading || googleLoading ? "cursor-not-allowed opacity-50" : ""
             }`}
-            disabled={loading}
+            disabled={emailLoading || googleLoading}
           >
-            {loading ? "Signing in..." : "Sign in"}
+            {emailLoading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <button
+            type="button"
             onClick={handleGoogle}
             className="w-full rounded-xl border border-slate-300 bg-white py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+            disabled={emailLoading || googleLoading}
           >
-            Sign in with Google
+            {googleLoading ? "Signing in with Google..." : "Sign in with Google"}
           </button>
         </div>
 

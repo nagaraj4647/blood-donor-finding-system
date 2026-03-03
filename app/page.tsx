@@ -5,7 +5,7 @@ import { onAuthStateChange } from "@/lib/firebase";
 
 export default function Home() {
   const [welcomeName, setWelcomeName] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChange((user) => {
