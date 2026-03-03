@@ -95,6 +95,20 @@ export default function ResponsiveHeader() {
               </Link>
             )}
           </div>
+
+          {showTopLinks && (
+            <div className="flex items-center gap-4 text-sm font-medium md:hidden">
+              <Link href="/about" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                About
+              </Link>
+              <Link href="/FAQ" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                FAQ
+              </Link>
+              <Link href="/contact" className="text-red-400 transition-colors duration-200 hover:text-red-700">
+                Contact
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 
