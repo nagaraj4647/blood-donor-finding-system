@@ -45,8 +45,8 @@ export default function ResponsiveHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-        <div className="flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             {!hideMenu && user && (
               <div className="relative">
                 <button
@@ -64,12 +64,15 @@ export default function ResponsiveHeader() {
               </div>
             )}
 
-            <Link href="/" className="flex items-center gap-2 text-lg font-bold text-red-600">
+            <Link
+              href="/"
+              className="flex items-center gap-2 whitespace-nowrap text-xl font-bold leading-none text-red-600 sm:text-2xl"
+            >
               Blood Connect
             </Link>
           </div>
 
-          <div className="flex items-center gap-8 text-sm font-medium">
+          <div className="hidden items-center gap-8 text-sm font-medium md:flex">
             {showTopLinks && (
               <>
                 <Link href="/" className="text-red-400 transition-colors duration-200 hover:text-red-700">
